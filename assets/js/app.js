@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const historyList = document.getElementById('historyList');
 
     // Function to convert Celsius to Fahrenheit
-    // function celsiusToFahrenheit(celsius) {
-    //     return (celsius * 9/5) + 32;
-    // }
+    function celsiusToFahrenheit(celsius) {
+        return (celsius * 9/5) + 32;
+    }
 
     async function getCoordinates(city) {
         const response = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`);
@@ -60,4 +60,50 @@ document.addEventListener('DOMContentLoaded', function() {
             forecastDetails.appendChild(forecastCard);
         }
     }
+
+    function updateHistory(city) {
+        let history = JSON.parse(localStorage.getItem('history')) || [];
+        if (!history.includes(city)) {
+            history.push(city);
+            localStorage.setItem('history', JSON.stringify(history));
+        }
+        displayHistory();
+    }
+
+    function displayHistory() {
+        historyList.innerHTML = '';
+        let history = JSON.parse(localStorage.getItem('history')) || [];
+        history.forEach(function(city) {
+            const li = document.createElement('li');
+            li.textContent = city;
+            li.addEventListener('click', function() {
+                cityInput.value = city;
+                searchWeather(city);
+            });
+            historyList.appendChild(li);
+        });
+    }
+
+    async function searchWeather(city) {
+        try {
+            const coordinates = await getCoordinates(city);
+            const weatherData = await getWeatherData(coordinates.lat, coordinates.lon);
+            displayCurrentWeather(weatherData);
+            displayForecast(weatherData);
+            updateHistory(city);
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+    searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const city = cityInput.value.trim();
+        if (city) {
+            searchWeather(city);
+            cityInput.value = '';
+        }
+    });
+
+    displayHistory();
 });
