@@ -1,8 +1,63 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const apiKey = '1f6368cc8815d1f8d0682ecff32d673a';
+document.addEventListener('DOMContentLoaded', function() {
+    const apiKey = '1f6368cc8815d1f8d0682ecff32d673a';  
     const searchForm = document.getElementById('searchForm');
     const cityInput = document.getElementById('cityInput');
     const currentWeatherDetails = document.getElementById('currentWeatherDetails');
-    const forecastDetails = document.getElementById('frecastDetails');
+    const forecastDetails = document.getElementById('forecastDetails');
     const historyList = document.getElementById('historyList');
+
+    // Function to convert Celsius to Fahrenheit
+    // function celsiusToFahrenheit(celsius) {
+    //     return (celsius * 9/5) + 32;
+    // }
+
+    async function getCoordinates(city) {
+        const response = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`);
+        const data = await response.json();
+        if (data && data.length > 0) {
+            return { lat: data[0].lat, lon: data[0].lon };
+        } else {
+            throw new Error('City not found');
+        }
+    }
+
+    async function getWeatherData(lat, lon) {
+        const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
+        const data = await response.json();
+        return data;
+    }
+
+    function displayCurrentWeather(data) {
+        const current = data.list[0];
+        const tempCelsius = current.main.temp;
+        const tempFahrenheit = celsiusToFahrenheit(tempCelsius);
+
+        currentWeatherDetails.innerHTML = `
+            <h3>${data.city.name} (${new Date(current.dt_txt).toLocaleDateString()})</h3>
+            <img src="http://openweathermap.org/img/wn/${current.weather[0].icon}.png" alt="${current.weather[0].description}">
+            <p>Temp: ${tempCelsius}°C / ${tempFahrenheit.toFixed(2)}°F</p>
+            <p>Humidity: ${current.main.humidity}%</p>
+            <p>Wind: ${current.wind.speed} m/s</p>
+        `;
+    }
+
+    function displayForecast(data) {
+        forecastDetails.innerHTML = '';
+        for (let i = 0; i < data.list.length; i += 8) {
+            const day = data.list[i];
+            const tempCelsius = day.main.temp;
+            const tempFahrenheit = celsiusToFahrenheit(tempCelsius);
+
+            const forecastCard = document.createElement('div');
+            forecastCard.classList.add('forecast-card');
+            forecastCard.innerHTML = `
+                <h4>${new Date(day.dt_txt).toLocaleDateString()}</h4>
+                <img src="http://openweathermap.org/img/wn/${day.weather[0].icon}.png" alt="${day.weather[0].description}">
+                <p>Temp: ${tempCelsius}°C / ${tempFahrenheit.toFixed(2)}°F</p>
+                <p>Humidity: ${day.main.humidity}%</p>
+                <p>Wind: ${day.wind.speed} m/s</p>
+            `;
+            forecastDetails.appendChild(forecastCard);
+        }
+    }
 });
