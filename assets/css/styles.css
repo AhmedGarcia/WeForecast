@@ -1,0 +1,71 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #007bff;
+    color: white;
+    padding: 1em;
+    text-align: center;
+}
+
+.container {
+    display: flex;
+    padding: 1em;
+}
+
+aside {
+    width: 25%;
+    padding-right: 1em;
+}
+
+aside form {
+    margin-bottom: 1em;
+}
+
+aside ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+aside ul li {
+    background-color: #ddd;
+    margin-bottom: 0.5em;
+    padding: 0.5em;
+    cursor: pointer;
+}
+
+aside ul li:hover {
+    background-color: #ccc;
+}
+
+main {
+    width: 75%;
+    padding-left: 1em;
+}
+
+section {
+    margin-bottom: 1em;
+    background-color: white;
+    padding: 1em;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#forecastDetails {
+    display: flex;
+    justify-content: space-between;
+}
+
+.forecast-card {
+    background-color: #007bff;
+    color: white;
+    padding: 1em;
+    border-radius: 8px;
+    text-align: center;
+    flex: 1;
+    margin: 0 5px;
+}
