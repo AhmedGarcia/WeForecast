@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return (celsius * 9/5) + 32;
     }
 
+    // Function to get coordinates of a city using OpenWeather's Geocoding API
     async function getCoordinates(city) {
         const response = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=1&appid=${apiKey}`);
         const data = await response.json();
@@ -21,12 +22,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+     // Function to get weather data using OpenWeather's 5 Day Forecast API
     async function getWeatherData(lat, lon) {
         const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
         const data = await response.json();
         return data;
     }
 
+     // Function to display current weather details on the page
     function displayCurrentWeather(data) {
         const current = data.list[0];
         const tempCelsius = current.main.temp;
@@ -41,6 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
     }
 
+     // Function to display 5-day weather forecast on the page
     function displayForecast(data) {
         forecastDetails.innerHTML = '';
         for (let i = 0; i < data.list.length; i += 8) {
@@ -61,6 +65,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Function to update search history in localStorage and display it
     function updateHistory(city) {
         let history = JSON.parse(localStorage.getItem('history')) || [];
         if (!history.includes(city)) {
@@ -70,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
         displayHistory();
     }
 
+    // Function to display search history from localStorage
     function displayHistory() {
         historyList.innerHTML = '';
         let history = JSON.parse(localStorage.getItem('history')) || [];
@@ -84,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Function to search for weather data of a city
     async function searchWeather(city) {
         try {
             const coordinates = await getCoordinates(city);
@@ -96,6 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Event listener for the search form submission
     searchForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const city = cityInput.value.trim();
@@ -105,5 +113,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
+    // Display search history on page load
     displayHistory();
 });
