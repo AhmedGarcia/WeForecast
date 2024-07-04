@@ -58,3 +58,8 @@ This is a weather dashboard application that allows users to search for the curr
 
 This project is licensed under the MIT License.
 
+## Contact Us
+
+GitHub User: https://github.com/AhmedGarcia
+
+GitHub Repo: https://github.com/AhmedGarcia/WeForecast
